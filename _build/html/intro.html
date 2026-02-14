@@ -1,0 +1,684 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Redes Neuronales Recurrentes: Modelando Memoria y Secuencia 🔁🧠 &#8212; Tópicos de Machine Learning y Redes Neuronales</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'intro';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="¿Qué es una Red Neuronal Recurrente (RNN) y por qué existe? 🔁🧠" href="contenidos/00_intro_RNN_LSTM.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo-uec.png" class="logo__image only-light" alt="Tópicos de Machine Learning y Redes Neuronales - Home"/>
+    <script>document.write(`<img src="_static/logo-uec.png" class="logo__image only-dark" alt="Tópicos de Machine Learning y Redes Neuronales - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1 current active">
+                <a class="reference internal" href="#">
+                    Redes Neuronales Recurrentes: Modelando Memoria y Secuencia 🔁🧠
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Redes Neuronales Recurrentes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="contenidos/00_intro_RNN_LSTM.html">¿Qué es una Red Neuronal Recurrente (RNN) y por qué existe? 🔁🧠</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contenidos/01_manual_rnn.html">Sesión Manual: Entendiendo la “Memoria” de las RNN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contenidos/02_simple_rnn.html">Implementación: Construyendo el “Cerebro” en Código (SimpleRNN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contenidos/03_caso_cafe.html">Caso de Estudio: Predicción de Exportaciones de Café Colombiano ☕🇨🇴</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contenidos/04_lstm_cafe.html">Superando el Olvido: LSTM (Long Short-Term Memory) 🧠🔋</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contenidos/05_btc_bilstm.html">Predicción de Bitcoin (BTC) con Arquitecturas Avanzadas 🚀₿</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/intro.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Redes Neuronales Recurrentes: Modelando Memoria y Secuencia 🔁🧠</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#donde-aparecen-los-datos-secuenciales">🌎 ¿Dónde aparecen los datos secuenciales?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-limitacion-de-las-redes-tradicionales">🧩 La limitación de las redes tradicionales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-hace-distinta-a-una-rnn">🔁 ¿Qué hace distinta a una RNN?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estado-oculto-hidden-state">Estado oculto (hidden state)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#de-la-memoria-corta-a-la-memoria-larga">🧠 De la memoria corta a la memoria larga</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gradiente-desvaneciente">Gradiente desvaneciente</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-solucion-lstm">🔋 La solución: LSTM</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ruta-de-aprendizaje-del-modulo">🧭 Ruta de aprendizaje del módulo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamentos-conceptuales">1️⃣ Fundamentos conceptuales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simulacion-manual">2️⃣ Simulación manual</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementacion-desde-cero">3️⃣ Implementación desde cero</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caso-de-negocio-real">4️⃣ Caso de negocio real</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mejora-arquitectonica">5️⃣ Mejora arquitectónica</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caso-financiero-avanzado">6️⃣ Caso financiero avanzado</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objetivo-del-modulo">🎯 Objetivo del módulo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nota-importante">⚠️ Nota importante</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comencemos">🚀 Comencemos</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="redes-neuronales-recurrentes-modelando-memoria-y-secuencia">
+<h1>Redes Neuronales Recurrentes: Modelando Memoria y Secuencia 🔁🧠<a class="headerlink" href="#redes-neuronales-recurrentes-modelando-memoria-y-secuencia" title="Link to this heading">#</a></h1>
+<p>Bienvenido al módulo de <strong>Redes Neuronales Recurrentes (RNN)</strong> dentro del curso <em>Tópicos de Machine Learning y Redes Neuronales</em>.</p>
+<p>Hasta este punto del libro hemos trabajado principalmente con modelos diseñados para datos <strong>independientes</strong>:</p>
+<ul class="simple">
+<li><p>Regresión</p></li>
+<li><p>Clasificación</p></li>
+<li><p>Redes Feedforward</p></li>
+<li><p>Convolucionales</p></li>
+</ul>
+<p>Sin embargo, muchos problemas reales no son independientes… son <strong>secuenciales</strong>.</p>
+<hr class="docutils" />
+<section id="donde-aparecen-los-datos-secuenciales">
+<h2>🌎 ¿Dónde aparecen los datos secuenciales?<a class="headerlink" href="#donde-aparecen-los-datos-secuenciales" title="Link to this heading">#</a></h2>
+<p>En Inteligencia de Negocios y Analítica encontramos secuencias constantemente:</p>
+<ul class="simple">
+<li><p>Series de tiempo de ventas</p></li>
+<li><p>Tráfico web diario</p></li>
+<li><p>Open Rate de campañas</p></li>
+<li><p>Producción agrícola</p></li>
+<li><p>Precios financieros</p></li>
+<li><p>Demanda energética</p></li>
+<li><p>Texto y lenguaje natural</p></li>
+</ul>
+<p>En todos estos casos, el presente depende del pasado.</p>
+<blockquote>
+<div><p>El orden de los datos contiene información.</p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="la-limitacion-de-las-redes-tradicionales">
+<h2>🧩 La limitación de las redes tradicionales<a class="headerlink" href="#la-limitacion-de-las-redes-tradicionales" title="Link to this heading">#</a></h2>
+<p>Una red neuronal clásica (Feedforward):</p>
+<ul class="simple">
+<li><p>recibe una entrada (x)</p></li>
+<li><p>la procesa</p></li>
+<li><p>produce una salida (\hat{y})</p></li>
+</ul>
+<p>Pero no tiene memoria.</p>
+<p>Si le damos el valor de hoy, no sabe qué pasó ayer.</p>
+<p>Esto es crítico en series de tiempo:</p>
+<ul class="simple">
+<li><p>Tendencias se acumulan.</p></li>
+<li><p>Patrones se repiten.</p></li>
+<li><p>Los ciclos importan.</p></li>
+</ul>
+<p>Aquí es donde nacen las RNN.</p>
+</section>
+<hr class="docutils" />
+<section id="que-hace-distinta-a-una-rnn">
+<h2>🔁 ¿Qué hace distinta a una RNN?<a class="headerlink" href="#que-hace-distinta-a-una-rnn" title="Link to this heading">#</a></h2>
+<p>Las Redes Neuronales Recurrentes introducen un concepto clave:</p>
+<section id="estado-oculto-hidden-state">
+<h3>Estado oculto (hidden state)<a class="headerlink" href="#estado-oculto-hidden-state" title="Link to this heading">#</a></h3>
+<p>En cada instante (t), la red combina:</p>
+<ul class="simple">
+<li><p>el dato actual (x_t)</p></li>
+<li><p>la memoria previa (h_{t-1})</p></li>
+</ul>
+<p>[
+h_t = f(x_t, h_{t-1})
+]</p>
+<p>Esto permite que la red mantenga un <strong>resumen comprimido del pasado</strong>.</p>
+<p>Podemos pensarlo como:</p>
+<blockquote>
+<div><p>“Todo lo que la red considera relevante hasta ahora”.</p>
+</div></blockquote>
+</section>
+</section>
+<hr class="docutils" />
+<section id="de-la-memoria-corta-a-la-memoria-larga">
+<h2>🧠 De la memoria corta a la memoria larga<a class="headerlink" href="#de-la-memoria-corta-a-la-memoria-larga" title="Link to this heading">#</a></h2>
+<p>Las RNN simples funcionan… pero tienen una limitación matemática importante:</p>
+<section id="gradiente-desvaneciente">
+<h3>Gradiente desvaneciente<a class="headerlink" href="#gradiente-desvaneciente" title="Link to this heading">#</a></h3>
+<p>Durante el entrenamiento:</p>
+<ul class="simple">
+<li><p>el error se propaga hacia atrás en el tiempo,</p></li>
+<li><p>multiplicando gradientes repetidamente.</p></li>
+</ul>
+<p>Esto hace que la señal de aprendizaje de eventos lejanos se pierda.</p>
+<p>Resultado:</p>
+<ul class="simple">
+<li><p>La red aprende lo reciente.</p></li>
+<li><p>Olvida lo antiguo.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="la-solucion-lstm">
+<h2>🔋 La solución: LSTM<a class="headerlink" href="#la-solucion-lstm" title="Link to this heading">#</a></h2>
+<p>Las arquitecturas <strong>Long Short-Term Memory (LSTM)</strong> fueron diseñadas para resolver este problema.</p>
+<p>Introducen:</p>
+<ul class="simple">
+<li><p>Estado de celda (memoria persistente)</p></li>
+<li><p>Compuertas de control:</p>
+<ul>
+<li><p>Olvido</p></li>
+<li><p>Entrada</p></li>
+<li><p>Salida</p></li>
+</ul>
+</li>
+</ul>
+<p>Esto permite:</p>
+<ul class="simple">
+<li><p>Recordar patrones largos</p></li>
+<li><p>Filtrar ruido reciente</p></li>
+<li><p>Modelar ciclos complejos</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="ruta-de-aprendizaje-del-modulo">
+<h2>🧭 Ruta de aprendizaje del módulo<a class="headerlink" href="#ruta-de-aprendizaje-del-modulo" title="Link to this heading">#</a></h2>
+<p>El módulo está diseñado de forma progresiva:</p>
+<section id="fundamentos-conceptuales">
+<h3>1️⃣ Fundamentos conceptuales<a class="headerlink" href="#fundamentos-conceptuales" title="Link to this heading">#</a></h3>
+<p>Definición de RNN, memoria, unrolling y compuertas LSTM.</p>
+</section>
+<section id="simulacion-manual">
+<h3>2️⃣ Simulación manual<a class="headerlink" href="#simulacion-manual" title="Link to this heading">#</a></h3>
+<p>Cálculo paso a paso del flujo de memoria.</p>
+</section>
+<section id="implementacion-desde-cero">
+<h3>3️⃣ Implementación desde cero<a class="headerlink" href="#implementacion-desde-cero" title="Link to this heading">#</a></h3>
+<p>Construcción de una SimpleRNN en NumPy.</p>
+</section>
+<section id="caso-de-negocio-real">
+<h3>4️⃣ Caso de negocio real<a class="headerlink" href="#caso-de-negocio-real" title="Link to this heading">#</a></h3>
+<p>Predicción de exportaciones de café colombiano.</p>
+</section>
+<section id="mejora-arquitectonica">
+<h3>5️⃣ Mejora arquitectónica<a class="headerlink" href="#mejora-arquitectonica" title="Link to this heading">#</a></h3>
+<p>Comparación SimpleRNN vs LSTM.</p>
+</section>
+<section id="caso-financiero-avanzado">
+<h3>6️⃣ Caso financiero avanzado<a class="headerlink" href="#caso-financiero-avanzado" title="Link to this heading">#</a></h3>
+<p>Predicción de Bitcoin con BiLSTM y regularización.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="objetivo-del-modulo">
+<h2>🎯 Objetivo del módulo<a class="headerlink" href="#objetivo-del-modulo" title="Link to this heading">#</a></h2>
+<p>Al finalizar, podrás:</p>
+<ul class="simple">
+<li><p>Entender cuándo usar RNN vs redes tradicionales.</p></li>
+<li><p>Explicar el rol del estado oculto y la memoria.</p></li>
+<li><p>Implementar RNN y LSTM.</p></li>
+<li><p>Construir pipelines de series de tiempo.</p></li>
+<li><p>Evaluar modelos secuenciales en negocio y finanzas.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="nota-importante">
+<h2>⚠️ Nota importante<a class="headerlink" href="#nota-importante" title="Link to this heading">#</a></h2>
+<p>Aunque veremos aplicaciones en mercados financieros, estos modelos:</p>
+<ul class="simple">
+<li><p>No garantizan rentabilidad.</p></li>
+<li><p>Son sensibles a cambios de régimen.</p></li>
+<li><p>Requieren validación rigurosa.</p></li>
+</ul>
+<p>El foco del módulo es <strong>modelado secuencial</strong>, no trading.</p>
+</section>
+<hr class="docutils" />
+<section id="comencemos">
+<h2>🚀 Comencemos<a class="headerlink" href="#comencemos" title="Link to this heading">#</a></h2>
+<p>En el siguiente notebook abriremos la “caja negra” de las RNN para entender, paso a paso, cómo fluye la memoria en el tiempo.</p>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="right-next"
+       href="contenidos/00_intro_RNN_LSTM.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">¿Qué es una Red Neuronal Recurrente (RNN) y por qué existe? 🔁🧠</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#donde-aparecen-los-datos-secuenciales">🌎 ¿Dónde aparecen los datos secuenciales?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-limitacion-de-las-redes-tradicionales">🧩 La limitación de las redes tradicionales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-hace-distinta-a-una-rnn">🔁 ¿Qué hace distinta a una RNN?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estado-oculto-hidden-state">Estado oculto (hidden state)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#de-la-memoria-corta-a-la-memoria-larga">🧠 De la memoria corta a la memoria larga</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gradiente-desvaneciente">Gradiente desvaneciente</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-solucion-lstm">🔋 La solución: LSTM</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ruta-de-aprendizaje-del-modulo">🧭 Ruta de aprendizaje del módulo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamentos-conceptuales">1️⃣ Fundamentos conceptuales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simulacion-manual">2️⃣ Simulación manual</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementacion-desde-cero">3️⃣ Implementación desde cero</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caso-de-negocio-real">4️⃣ Caso de negocio real</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mejora-arquitectonica">5️⃣ Mejora arquitectónica</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caso-financiero-avanzado">6️⃣ Caso financiero avanzado</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objetivo-del-modulo">🎯 Objetivo del módulo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nota-importante">⚠️ Nota importante</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comencemos">🚀 Comencemos</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Maestría en Inteligencia de Negocios
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>
+  <p>Universidad Externado de Colombia</p>
+</div>
+
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

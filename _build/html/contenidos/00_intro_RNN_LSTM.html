@@ -1,0 +1,1162 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>¿Qué es una Red Neuronal Recurrente (RNN) y por qué existe? 🔁🧠 &#8212; Tópicos de Machine Learning y Redes Neuronales</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}`;
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        all_mermaids.forEach((el) => {
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+        await mermaid.run();
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("False" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("False" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+const load = async () => {
+    initStyles();
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...JSON.parse(
+                    `{"startOnLoad": false}`
+                ),
+                ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...JSON.parse(
+        `{"startOnLoad": false}`
+    ),
+    ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+    }
+);
+
+window.addEventListener("load", load);</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'contenidos/00_intro_RNN_LSTM';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Sesión Manual: Entendiendo la “Memoria” de las RNN" href="01_manual_rnn.html" />
+    <link rel="prev" title="Redes Neuronales Recurrentes: Modelando Memoria y Secuencia 🔁🧠" href="../intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo-uec.png" class="logo__image only-light" alt="Tópicos de Machine Learning y Redes Neuronales - Home"/>
+    <script>document.write(`<img src="../_static/logo-uec.png" class="logo__image only-dark" alt="Tópicos de Machine Learning y Redes Neuronales - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Redes Neuronales Recurrentes: Modelando Memoria y Secuencia 🔁🧠
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Redes Neuronales Recurrentes</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">¿Qué es una Red Neuronal Recurrente (RNN) y por qué existe? 🔁🧠</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_manual_rnn.html">Sesión Manual: Entendiendo la “Memoria” de las RNN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_simple_rnn.html">Implementación: Construyendo el “Cerebro” en Código (SimpleRNN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_caso_cafe.html">Caso de Estudio: Predicción de Exportaciones de Café Colombiano ☕🇨🇴</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_lstm_cafe.html">Superando el Olvido: LSTM (Long Short-Term Memory) 🧠🔋</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_btc_bilstm.html">Predicción de Bitcoin (BTC) con Arquitecturas Avanzadas 🚀₿</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/contenidos/00_intro_RNN_LSTM.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>¿Qué es una Red Neuronal Recurrente (RNN) y por qué existe? 🔁🧠</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recordatorio-feedforward-secuencia">1) Recordatorio: feedforward ≠ secuencia</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-idea-central-de-una-rnn-estado-oculto-memoria">2) La idea central de una RNN: estado oculto (memoria)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#intuicion-bi">Intuición BI</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagrama-feedforward-vs-rnn-mermaid">3) Diagrama: feedforward vs RNN (Mermaid)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feedforward-una-sola-entrada">3.1 Feedforward (una sola entrada)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rnn-recurrente">3.2 RNN (recurrente)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#desenrollado-en-el-tiempo-unrolling">4) “Desenrollado” en el tiempo (Unrolling)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#el-problema-del-gradiente-desvaneciente-y-explotante">5) El problema del gradiente desvaneciente (y explotante)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#como-lo-arregla-lstm-memoria-compuertas">6) ¿Cómo lo arregla LSTM? Memoria + compuertas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagrama-conceptual-de-lstm-mermaid">7) Diagrama conceptual de LSTM (Mermaid)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-aprende-una-compuerta">8) ¿Qué “aprende” una compuerta?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conexion-con-los-notebooks-del-curso">9) Conexión con los notebooks del curso</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="que-es-una-red-neuronal-recurrente-rnn-y-por-que-existe">
+<h1>¿Qué es una Red Neuronal Recurrente (RNN) y por qué existe? 🔁🧠<a class="headerlink" href="#que-es-una-red-neuronal-recurrente-rnn-y-por-que-existe" title="Link to this heading">#</a></h1>
+<p>Este notebook es <strong>conceptual</strong> y sirve como puerta de entrada antes de pasar al cálculo manual y al código.</p>
+<p>Aquí vas a entender:</p>
+<ul class="simple">
+<li><p>qué cambia en la arquitectura cuando pasamos de una red “clásica” (feedforward) a una RNN,</p></li>
+<li><p>qué significa “memoria” en términos de <strong>estado oculto</strong>,</p></li>
+<li><p>qué es el “desenrollado” (unrolling) en el tiempo,</p></li>
+<li><p>por qué aparece el <strong>gradiente desvaneciente</strong>,</p></li>
+<li><p>y cómo LSTM introduce <strong>compuertas</strong> (gates) para controlar el olvido y la escritura de memoria.</p></li>
+</ul>
+<section id="recordatorio-feedforward-secuencia">
+<h2>1) Recordatorio: feedforward ≠ secuencia<a class="headerlink" href="#recordatorio-feedforward-secuencia" title="Link to this heading">#</a></h2>
+<p>En una red feedforward (MLP), cada ejemplo se procesa “de una vez”:</p>
+<ul class="simple">
+<li><p>entrada <span class="math notranslate nohighlight">\(x\)</span> → capas → salida <span class="math notranslate nohighlight">\(\hat{y}\)</span></p></li>
+</ul>
+<p>Pero en datos secuenciales, el <strong>orden importa</strong>:</p>
+<ul class="simple">
+<li><p>series de tiempo (ventas, clima, GMV, precios)</p></li>
+<li><p>texto (palabras en orden)</p></li>
+<li><p>audio (señal temporal)</p></li>
+</ul>
+<p>📌 Problema: si procesas solo el último valor <span class="math notranslate nohighlight">\(x_t\)</span>, pierdes el contexto: <span class="math notranslate nohighlight">\(x_{t-1}, x_{t-2}, ...\)</span></p>
+</section>
+<section id="la-idea-central-de-una-rnn-estado-oculto-memoria">
+<h2>2) La idea central de una RNN: estado oculto (memoria)<a class="headerlink" href="#la-idea-central-de-una-rnn-estado-oculto-memoria" title="Link to this heading">#</a></h2>
+<p>Una RNN procesa una secuencia paso a paso y mantiene un <strong>estado oculto</strong> (h_t).</p>
+<p>En cada instante <span class="math notranslate nohighlight">\(t\)</span>, la red mezcla:</p>
+<ul class="simple">
+<li><p>lo nuevo: <span class="math notranslate nohighlight">\(x_t\)</span></p></li>
+<li><p>lo que “recuerda”: <span class="math notranslate nohighlight">\(h_{t-1}\)</span></p></li>
+</ul>
+<p>Ecuación típica (RNN simple):</p>
+<div class="math notranslate nohighlight">
+\[
+h_t = \tanh(W_{xh} x_t + W_{hh} h_{t-1} + b_h)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\hat{y}_t = W_{hy} h_t + b_y
+\]</div>
+<section id="intuicion-bi">
+<h3>Intuición BI<a class="headerlink" href="#intuicion-bi" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(h_t\)</span> es un <strong>resumen comprimido</strong> del pasado, como un “estado del sistema” que se va actualizando.</p>
+</section>
+</section>
+<section id="diagrama-feedforward-vs-rnn-mermaid">
+<h2>3) Diagrama: feedforward vs RNN (Mermaid)<a class="headerlink" href="#diagrama-feedforward-vs-rnn-mermaid" title="Link to this heading">#</a></h2>
+<section id="feedforward-una-sola-entrada">
+<h3>3.1 Feedforward (una sola entrada)<a class="headerlink" href="#feedforward-una-sola-entrada" title="Link to this heading">#</a></h3>
+<pre  class="mermaid">
+        flowchart LR
+  X[x] --&gt; H[Capas ocultas] --&gt; Y[ŷ]
+    </pre></section>
+<section id="rnn-recurrente">
+<h3>3.2 RNN (recurrente)<a class="headerlink" href="#rnn-recurrente" title="Link to this heading">#</a></h3>
+<pre  class="mermaid">
+        flowchart LR
+  Xt[&quot;x(t)&quot;] --&gt; Ht[&quot;h(t)&quot;]
+  Hprev[&quot;h(t-1)&quot;] --&gt; Ht
+  Ht --&gt; Yt[&quot;y_hat(t)&quot;]
+  Ht --&gt; Hnext[&quot;h(t+1)&quot;]
+    </pre></section>
+</section>
+<section id="desenrollado-en-el-tiempo-unrolling">
+<h2>4) “Desenrollado” en el tiempo (Unrolling)<a class="headerlink" href="#desenrollado-en-el-tiempo-unrolling" title="Link to this heading">#</a></h2>
+<p>Entrenar una RNN se entiende mejor si la “desenrollas”:</p>
+<ul class="simple">
+<li><p>la misma celda se repite para (t=1,2,3,…)</p></li>
+<li><p>los pesos (W_{xh}, W_{hh}) se <strong>comparten</strong> en todos los tiempos</p></li>
+</ul>
+<pre  class="mermaid">
+        flowchart LR
+  X1[x_1] --&gt; H1[h_1] --&gt; H2[h_2] --&gt; H3[h_3]
+  X2[x_2] --&gt; H2
+  X3[x_3] --&gt; H3
+  H1 --&gt; Y1[ŷ_1]
+  H2 --&gt; Y2[ŷ_2]
+  H3 --&gt; Y3[ŷ_3]
+    </pre><p>📌 Esto explica por qué el entrenamiento se llama <strong>Backpropagation Through Time (BPTT)</strong>:
+el error se propaga desde el final hacia atrás, atravesando los pasos temporales.</p>
+</section>
+<section id="el-problema-del-gradiente-desvaneciente-y-explotante">
+<h2>5) El problema del gradiente desvaneciente (y explotante)<a class="headerlink" href="#el-problema-del-gradiente-desvaneciente-y-explotante" title="Link to this heading">#</a></h2>
+<p>Durante BPTT, la señal de gradiente se multiplica repetidamente por términos relacionados con:</p>
+<ul class="simple">
+<li><p>derivadas de activación (tanh/sigmoid)</p></li>
+<li><p>la matriz recurrente <span class="math notranslate nohighlight">\(W_{hh}\)</span></p></li>
+</ul>
+<p>Si esas multiplicaciones tienden a producir valores menores que 1, el gradiente se hace muy pequeño:</p>
+<div class="math notranslate nohighlight">
+\[
+0.1 \times 0.1 \times \dots \approx 0
+\]</div>
+<p><strong>Consecuencia:</strong> la red aprende sobre todo de lo reciente → “memoria corta”.</p>
+<p>También puede pasar lo contrario (gradiente muy grande): <strong>gradiente explotante</strong>.</p>
+</section>
+<section id="como-lo-arregla-lstm-memoria-compuertas">
+<h2>6) ¿Cómo lo arregla LSTM? Memoria + compuertas<a class="headerlink" href="#como-lo-arregla-lstm-memoria-compuertas" title="Link to this heading">#</a></h2>
+<p>LSTM añade un estado extra: <strong>estado de celda</strong> <span class="math notranslate nohighlight">\(c_t\)</span>, pensado como una autopista de memoria.</p>
+<p>La actualización se controla con <strong>compuertas</strong> (valores entre 0 y 1 con sigmoide):</p>
+<ul class="simple">
+<li><p><strong>Forget gate</strong> <span class="math notranslate nohighlight">\(f_t\)</span>: qué parte de <span class="math notranslate nohighlight">\(c_{t-1}\)</span> se conserva</p></li>
+<li><p><strong>Input gate</strong> <span class="math notranslate nohighlight">\(i_t\)</span>: qué parte de la información nueva se escribe</p></li>
+<li><p><strong>Output gate</strong> <span class="math notranslate nohighlight">\(o_t\)</span>: qué parte de la memoria se expone como <span class="math notranslate nohighlight">\(h_t\)</span></p></li>
+</ul>
+<p>Ecuaciones (forma estándar):</p>
+<div class="math notranslate nohighlight">
+\[
+f_t = \sigma(W_f [h_{t-1}, x_t] + b_f)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+i_t = \sigma(W_i [h_{t-1}, x_t] + b_i)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\tilde{c}_t = \tanh(W_c [h_{t-1}, x_t] + b_c)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+c_t = f_t \odot c_{t-1} + i_t \odot \tilde{c}_t
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+o_t = \sigma(W_o [h_{t-1}, x_t] + b_o)
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+h_t = o_t \odot \tanh(c_t)
+\]</div>
+<blockquote>
+<div><p>(\odot) es producto elemento a elemento.</p>
+</div></blockquote>
+</section>
+<section id="diagrama-conceptual-de-lstm-mermaid">
+<h2>7) Diagrama conceptual de LSTM (Mermaid)<a class="headerlink" href="#diagrama-conceptual-de-lstm-mermaid" title="Link to this heading">#</a></h2>
+<p>Este diagrama no pretende ser “electrónico” sino pedagógico:</p>
+<pre  class="mermaid">
+        flowchart LR
+
+  subgraph Cell[&quot;LSTM cell (time t)&quot;]
+
+    Xt[&quot;x(t)&quot;] --&gt; G1[&quot;Input gate i(t)&quot;]
+    Xt --&gt; G2[&quot;Forget gate f(t)&quot;]
+    Xt --&gt; G3[&quot;Output gate o(t)&quot;]
+
+    Hprev[&quot;h(t-1)&quot;] --&gt; G1
+    Hprev --&gt; G2
+    Hprev --&gt; G3
+
+    Cprev[&quot;c(t-1)&quot;] --&gt; Update[&quot;Update memory&quot;]
+    G2 --&gt; Update
+    G1 --&gt; Update
+
+    Update --&gt; Ct[&quot;c(t)&quot;]
+    Ct --&gt; Out[&quot;Compute h(t)&quot;]
+    G3 --&gt; Out
+    Out --&gt; Ht[&quot;h(t)&quot;]
+
+  end
+
+  Ct --&gt; Cnext[&quot;c(t+1)&quot;]
+  Ht --&gt; Hnext[&quot;h(t+1)&quot;]
+    </pre></section>
+<section id="que-aprende-una-compuerta">
+<h2>8) ¿Qué “aprende” una compuerta?<a class="headerlink" href="#que-aprende-una-compuerta" title="Link to this heading">#</a></h2>
+<p>Piensa en compuertas como <strong>decisiones suaves</strong>:</p>
+<ul class="simple">
+<li><p>si <span class="math notranslate nohighlight">\(f_t \approx 1\)</span> → conservas memoria</p></li>
+<li><p>si <span class="math notranslate nohighlight">\(f_t \approx 0\)</span> → olvidas</p></li>
+<li><p>si <span class="math notranslate nohighlight">\(i_t \approx 1\)</span> → escribes información nueva</p></li>
+<li><p>si <span class="math notranslate nohighlight">\(o_t \approx 1\)</span> → expones más memoria a la salida</p></li>
+</ul>
+<p>Eso hace a LSTM muy útil para patrones con distintos horizontes:</p>
+<ul class="simple">
+<li><p>corto plazo (ruido, cambios recientes)</p></li>
+<li><p>largo plazo (estacionalidad, ciclos, eventos importantes)</p></li>
+</ul>
+</section>
+<section id="conexion-con-los-notebooks-del-curso">
+<h2>9) Conexión con los notebooks del curso<a class="headerlink" href="#conexion-con-los-notebooks-del-curso" title="Link to this heading">#</a></h2>
+<p>Con esto ya estás listo para:</p>
+<ol class="arabic simple">
+<li><p><strong>Notebook 1:</strong> sesión manual (ver el flujo de memoria con números)</p></li>
+<li><p><strong>Notebook 2:</strong> clase <code class="docutils literal notranslate"><span class="pre">SimpleRNN</span></code> (construir el “cerebro” en NumPy)</p></li>
+<li><p><strong>Notebook 3:</strong> caso café con SimpleRNN (pipeline + evaluación)</p></li>
+<li><p><strong>Notebook 4:</strong> caso café con LSTM (comparativa vs SimpleRNN)</p></li>
+<li><p><strong>Notebook 5:</strong> BTC con BiLSTM (volatilidad + baseline + modo offline)</p></li>
+</ol>
+<p>📌 Este notebook (definiciones + diagramas) es el mejor “arranque” para que los estudiantes entiendan el mapa general.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">sigmoid</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
+<span class="n">tanh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sigmoid</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tanh</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Funciones típicas en RNN/LSTM&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;valor&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/7e66bca0d7142a599f00877b86a85182409ac4e12c3861d29210dcc32dda1c63.png" src="../_images/7e66bca0d7142a599f00877b86a85182409ac4e12c3861d29210dcc32dda1c63.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./contenidos"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Redes Neuronales Recurrentes: Modelando Memoria y Secuencia 🔁🧠</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="01_manual_rnn.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Sesión Manual: Entendiendo la “Memoria” de las RNN</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recordatorio-feedforward-secuencia">1) Recordatorio: feedforward ≠ secuencia</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#la-idea-central-de-una-rnn-estado-oculto-memoria">2) La idea central de una RNN: estado oculto (memoria)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#intuicion-bi">Intuición BI</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagrama-feedforward-vs-rnn-mermaid">3) Diagrama: feedforward vs RNN (Mermaid)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feedforward-una-sola-entrada">3.1 Feedforward (una sola entrada)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rnn-recurrente">3.2 RNN (recurrente)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#desenrollado-en-el-tiempo-unrolling">4) “Desenrollado” en el tiempo (Unrolling)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#el-problema-del-gradiente-desvaneciente-y-explotante">5) El problema del gradiente desvaneciente (y explotante)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#como-lo-arregla-lstm-memoria-compuertas">6) ¿Cómo lo arregla LSTM? Memoria + compuertas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagrama-conceptual-de-lstm-mermaid">7) Diagrama conceptual de LSTM (Mermaid)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#que-aprende-una-compuerta">8) ¿Qué “aprende” una compuerta?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conexion-con-los-notebooks-del-curso">9) Conexión con los notebooks del curso</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Maestría en Inteligencia de Negocios
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  <div>
+  <p>Universidad Externado de Colombia</p>
+</div>
+
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
