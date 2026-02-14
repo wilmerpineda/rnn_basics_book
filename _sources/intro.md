@@ -35,9 +35,9 @@ En todos estos casos, el presente depende del pasado.
 
 Una red neuronal clásica (Feedforward):
 
-- recibe una entrada \(x\)
+- recibe una entrada $x$
 - la procesa
-- produce una salida \(\hat{y}\)
+- produce una salida $\hat{y}$
 
 Pero no tiene memoria.
 
@@ -59,10 +59,10 @@ Las Redes Neuronales Recurrentes introducen un concepto clave:
 
 ### Estado oculto (hidden state)
 
-En cada instante \(t\), la red combina:
+En cada instante $t$, la red combina:
 
-- el dato actual \(x_t\)
-- la memoria previa \(h_{t-1}\)
+- el dato actual $x_t$
+- la memoria previa $h_{t-1}$
 
 \[
 h_t = f(x_t, h_{t-1})
