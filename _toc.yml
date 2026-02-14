@@ -1,0 +1,14 @@
+# Archivo: _toc.yml
+
+format: jb-book
+root: intro
+
+parts:
+  - caption: Redes Neuronales Recurrentes
+    chapters:
+    - file: contenidos/00_intro_RNN_LSTM
+    - file: contenidos/01_manual_rnn
+    - file: contenidos/02_simple_rnn
+    - file: contenidos/03_caso_cafe
+    - file: contenidos/04_lstm_cafe
+    - file: contenidos/05_btc_bilstm
